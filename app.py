@@ -1,16 +1,17 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, session, send_file
 import sqlite3
 import os
-import io
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
 
 # Initialize Flask app
 app = Flask(__name__, 
-            template_folder=r'D:\visual studio\face_recognition\devesh_gouni_\python',  # Templates in 'templates' folder
-            static_folder=r'D:\visual studio\face_recognition\devesh_gouni_\python')      # Static files in 'static' folder
-app.secret_key = os.urandom(24)          # Secure random key
-UPLOAD_FOLDER = r'D:\visual studio\face_recognition\devesh_gouni_\python'        # User uploads
+            template_folder='templates',  # Templates in 'templates' folder
+            static_folder='static')      # Static files in 'static' folder
+app.secret_key = os.urandom(24)  # Secure random key
+
+# Define upload folder relative to the app's root directory
+UPLOAD_FOLDER = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'uploads')
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 # Ensure upload folder exists
@@ -141,4 +142,5 @@ def logout():
     return redirect(url_for('login'))
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port)
