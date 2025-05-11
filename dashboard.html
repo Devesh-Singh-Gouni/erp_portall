@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Student ERP Portal</title>
+    <meta name="description" content="Student ERP Portal Dashboard" />
+    <meta name="author" content="Lovable" />
+    <script src="https://cdn.gpteng.co/gptengineer.js" type="module"></script>
+    <style>
+      :root {
+        --primary-blue: #1a56db;
+        --secondary-blue: #2563eb;
+        --light-blue: #3b82f6;
+        --bg-color: #f1f5f9;
+        --card-bg: #ffffff;
+        --text-dark: #1e293b;
+        --text-light: #64748b;
+        --text-white: #ffffff;
+        --border-color: #e2e8f0;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+          Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+      }
+
+      body {
+        background-color: var(--bg-color);
+      }
+
+      .container {
+        min-height: 100vh;
+        max-width: 100%;
+      }
+
+      /* Header Styles */
+      header {
+        background-color: var(--primary-blue);
+        color: var(--text-white);
+        padding: 12px 16px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .header-left, .header-right {
+        display: flex;
+        align-items: center;
+      }
+
+      .menu-btn, .back-btn, .user-btn {
+        background: transparent;
+        border: none;
+        color: var(--text-white);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        padding: 8px;
+        border-radius: 4px;
+      }
+
+      .menu-btn:hover, .back-btn:hover, .user-btn:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+      }
+
+      .logo-container {
+        display: flex;
+        align-items: center;
+        margin-left: 8px;
+      }
+
+      .logo {
+        height: 40px;
+        width: 40px;
+        background-color: white;
+        border-radius: 50%;
+        padding: 4px;
+        margin-right: 12px;
+      }
+
+      .university-info h1 {
+        font-size: 18px;
+        font-weight: bold;
+      }
+
+      .university-info p {
+        font-size: 12px;
+        opacity: 0.9;
+      }
+
+      .back-btn {
+        margin-right: 8px;
+      }
+
+      .back-btn svg {
+        margin-right: 4px;
+      }
+
+      .user-img {
+        height: 32px;
+        width: 32px;
+        border-radius: 50%;
+        object-fit: cover;
+      }
+
+      /* Notice Styles */
+      .notice {
+        padding: 12px 16px;
+        text-align: center;
+        color: var(--text-white);
+      }
+
+      .notice.primary {
+        background-color: var(--secondary-blue);
+      }
+
+      .notice.secondary {
+        background-color: var(--light-blue);
+      }
+
+      /* Main Content */
+      main {
+        max-width: 1280px;
+        margin: 0 auto;
+        padding: 24px 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+      }
+
+      @media (min-width: 768px) {
+        main {
+          flex-direction: row;
+        }
+      }
+
+      /* Profile Section */
+      .profile-section {
+        width: 100%;
+        margin-bottom: 24px;
+      }
+
+      @media (min-width: 768px) {
+        .profile-section {
+          width: 25%;
+          margin-bottom: 0;
+        }
+      }
+
+      .profile-card {
+        background-color: var(--card-bg);
+        border-radius: 8px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+      }
+
+      .profile-header {
+        background-color: var(--primary-blue);
+        color: var(--text-white);
+        padding: 16px;
+        display: flex;
+        align-items: center;
+      }
+
+      .profile-pic {
+        width: 64px;
+        height: 64px;
+        border-radius: 50%;
+        object-fit: cover;
+        margin-right: 12px;
+      }
+
+      .student-id {
+        font-size: 14px;
+        opacity: 0.8;
+      }
+
+      .profile-details {
+        padding: 16px;
+      }
+
+      .detail-item {
+        margin-bottom: 12px;
+      }
+
+      .label {
+        color: var(--text-light);
+        font-size: 14px;
+        display: block;
+        margin-bottom: 2px;
+      }
+
+      .value {
+        color: var(--text-dark);
+        font-size: 14px;
+        font-weight: 500;
+      }
+
+      /* Content Section */
+      .content-section {
+        width: 100%;
+      }
+
+      @media (min-width: 768px) {
+        .content-section {
+          width: 75%;
+        }
+      }
+
+      .dashboard-card {
+        background-color: var(--card-bg);
+        border-radius: 8px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        padding: 16px;
+        margin-bottom: 16px;
+      }
+
+      .dashboard-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 16px;
+      }
+
+      .search-input {
+        padding: 4px 12px;
+        border: 1px solid var(--border-color);
+        border-radius: 4px;
+        font-size: 14px;
+      }
+
+      .module-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 16px;
+      }
+
+      @media (min-width: 640px) {
+        .module-grid {
+          grid-template-columns: repeat(3, 1fr);
+        }
+      }
+
+      @media (min-width: 768px) {
+        .module-grid {
+          grid-template-columns: repeat(4, 1fr);
+        }
+      }
+
+      @media (min-width: 1024px) {
+        .module-grid {
+          grid-template-columns: repeat(6, 1fr);
+        }
+      }
+
+      .module-card {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 16px;
+        border-radius: 8px;
+        background-color: var(--card-bg);
+        border: 1px solid var(--border-color);
+        cursor: pointer;
+        transition: box-shadow 0.2s ease;
+      }
+
+      .module-card:hover {
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      }
+
+      .module-icon {
+        width: 56px;
+        height: 56px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 8px;
+        color: var(--text-white);
+      }
+
+      .module-name {
+        font-size: 14px;
+        font-weight: 500;
+        text-align: center;
+      }
+
+      /* Info Panels */
+      .info-panels {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 16px;
+      }
+
+      @media (min-width: 768px) {
+        .info-panels {
+          grid-template-columns: repeat(3, 1fr);
+        }
+      }
+
+      .info-panel {
+        background-color: var(--card-bg);
+        border-radius: 8px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        padding: 16px;
+      }
+
+      .panel-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 12px;
+      }
+
+      .panel-icon {
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 12px;
+        color: var(--text-white);
+        background-color: var(--secondary-blue);
+      }
+
+      .panel-items {
+        list-style: none;
+     31: none;
+      }
+
+      .panel-item {
+        padding: 8px 0;
+        border-bottom: 1px solid var(--border-color);
+      }
+
+      .panel-item:last-child {
+        border-bottom: none;
+      }
+
+      .item-date {
+        font-size: 12px;
+        color: var(--text-light);
+        margin-bottom: 4px;
+      }
+
+      .item-content {
+        font-size: 14px;
+        color: var(--text-dark);
+      }
+
+      .no-items {
+        color: var(--text-light);
+        text-align: center;
+        padding: 16px 0;
+        font-size: 14px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <!-- Header -->
+      <header>
+        <div class="header-left">
+          <button class="menu-btn">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/></svg>
+          </button>
+          <div class="logo-container">
+            <svg width="40" height="40" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" class="logo">
+              <rect width="100" height="100" fill="#e2e8f0"/>
+              <path d="M25,25 L75,75 M75,25 L25,75" stroke="#94a3b8" stroke-width="5"/>
+            </svg>
+            <div class="university-info">
+              <h1>Graphic Era University</h1>
+              <p>Education for Innovation</p>
+            </div>
+          </div>
+        </div>
+        <div class="header-right">
+          <button class="back-btn" onclick="window.location.href='{{ url_for('logout') }}'">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
+            Logout
+          </button>
+          <button class="user-btn">
+            <img src="{{ photo_path }}" alt="User" class="user-img">
+          </button>
+        </div>
+      </header>
+
+      <!-- Notices -->
+      <div class="notice primary">
+        <p>Dear Student, IT IS ADVISED TO PAY FEE THROUGH ERP. USP of ERP fee payment portal are: 1. Instant fee receipt. 2. Automatic system generated university receipts. 3. No waiting period for offline verification. Thanks</p>
+      </div>
+      <div class="notice secondary">
+        <p>75% attendance is mandatory to be eligible for appearing in the end semester examinations.</p>
+      </div>
+
+      <!-- Main Content -->
+      <main>
+        <!-- Left Side - Student Profile -->
+        <section class="profile-section">
+          <div class="profile-card">
+            <div class="profile-header">
+              <img src="{{ photo_path }}" alt="Profile" class="profile-pic">
+              <div>
+                <h3>{{ name }}</h3>
+                <p class="student-id">{{ email }}</p>
+              </div>
+            </div>
+            <div class="profile-details">
+              <div class="detail-item">
+                <span class="label">Program:</span>
+                <span class="value">B.Tech in Computer Science</span>
+              </div>
+              <div class="detail-item">
+                <span class="label">Semester:</span>
+                <span class="value">6</span>
+              </div>
+              <div class="detail-item">
+                <span class="label">Section:</span>
+                <span class="value">A</span>
+              </div>
+              <div class="detail-item">
+                <span class="label">Academic Year:</span>
+                <span class="value">2024-25</span>
+              </div>
+              <div class="detail-item">
+                <span class="label">Father's Name:</span>
+                <span class="value">Vijay Sharma</span>
+              </div>
+              <div class="detail-item">
+                <span class="label">Mother's Name:</span>
+                <span class="value">Priya Sharma</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Right Side - Modules and Information -->
+        <section class="content-section">
+          <!-- Module Grid -->
+          <div class="dashboard-card">
+            <div class="dashboard-header">
+              <h2>Dashboard</h2>
+              <div class="search-container">
+                <input type="text" placeholder="Search Modules..." class="search-input"/>
+              </div>
+            </div>
+            <div class="module-grid">
+              <!-- Modules will be populated by JavaScript -->
+            </div>
+          </div>
+          
+          <!-- Information Panels -->
+          <div class="info-panels">
+            <!-- Panels will be populated by JavaScript -->
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        // Module data
+        const modules = [
+          { name: "Academic", icon: "home", color: "#3b82f6" },
+          { name: "Fee", icon: "info", color: "#8b5cf6" },
+          { name: "Circular", icon: "info", color: "#f97316" },
+          { name: "Exam", icon: "search", color: "#f59e0b" },
+          { name: "Placement", icon: "user", color: "#10b981" },
+          { name: "Hostel", icon: "home", color: "#ef4444" },
+          { name: "Grievance", icon: "bell", color: "#14b8a6" }
+        ];
+
+        // Info panel data
+        const infoPanels = [
+          { 
+            title: "Circular Notices", 
+            icon: "info", 
+            color: "#f97316",
+            items: [
+              { date: "16/04/2025", content: "Notice no 112 Basketball Tournament 2024-25" },
+              { date: "16/04/2025", content: "Regarding fee deposit for the Odd Semester (III, V, VII & IX ) 2025-26" }
+            ]
+          },
+          { 
+            title: "Results", 
+            icon: "search", 
+            color: "#f59e0b",
+            items: []
+          },
+          { 
+            title: "Today's Substitution", 
+            icon: "calendar", 
+            color: "#0ea5e9",
+            items: []
+          },
+          { 
+            title: "Notifications", 
+            icon: "bell", 
+            color: "#14b8a6",
+            items: []
+          },
+          { 
+            title: "Corporate Resource Centre (T & P)", 
+            icon: "user", 
+            color: "#10b981",
+            items: []
+          },
+          { 
+            title: "Exam", 
+            icon: "info", 
+            color: "#f59e0b",
+            items: []
+          },
+          { 
+            title: "Events", 
+            icon: "calendar", 
+            color: "#0ea5e9",
+            items: []
+          }
+        ];
+
+        // Helper function to get icon SVG
+        function getIconSvg(iconName) {
+          const icons = {
+            home: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>',
+            user: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="5"/><path d="M20 21a8 8 0 0 0-16 0"/></svg>',
+            calendar: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>',
+            search: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>',
+            bell: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>',
+            info: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>'
+          };
+          
+          return icons[iconName] || icons.info;
+        }
+
+        // Render modules
+        function renderModules() {
+          const moduleGrid = document.querySelector('.module-grid');
+          
+          modules.forEach(module => {
+            const moduleCard = document.createElement('div');
+            moduleCard.className = 'module-card';
+            
+            const iconDiv = document.createElement('div');
+            iconDiv.className = 'module-icon';
+            iconDiv.style.backgroundColor = module.color;
+            iconDiv.innerHTML = getIconSvg(module.icon);
+            
+            const nameDiv = document.createElement('h3');
+            nameDiv.className = 'module-name';
+            nameDiv.textContent = module.name;
+            
+            moduleCard.appendChild(iconDiv);
+            moduleCard.appendChild(nameDiv);
+            
+            moduleGrid.appendChild(moduleCard);
+          });
+        }
+
+        // Render info panels
+        function renderInfoPanels() {
+          const infoPanelsContainer = document.querySelector('.info-panels');
+          
+          infoPanels.forEach(panel => {
+            const panelDiv = document.createElement('div');
+            panelDiv.className = 'info-panel';
+            
+            const headerDiv = document.createElement('div');
+            headerDiv.className = 'panel-header';
+            
+            const iconDiv = document.createElement('div');
+            iconDiv.className = 'panel-icon';
+            iconDiv.style.backgroundColor = panel.color;
+            iconDiv.innerHTML = getIconSvg(panel.icon);
+            
+            const titleDiv = document.createElement('h3');
+            titleDiv.textContent = panel.title;
+            
+            headerDiv.appendChild(iconDiv);
+            headerDiv.appendChild(titleDiv);
+            
+            const itemsList = document.createElement('ul');
+            itemsList.className = 'panel-items';
+            
+            if (panel.items && panel.items.length > 0) {
+              panel.items.forEach(item => {
+                const listItem = document.createElement('li');
+                listItem.className = 'panel-item';
+                
+                const dateDiv = document.createElement('div');
+                dateDiv.className = 'item-date';
+                dateDiv.textContent = item.date;
+                
+                const contentDiv = document.createElement('div');
+                contentDiv.className = 'item-content';
+                contentDiv.textContent = item.content;
+                
+                listItem.appendChild(dateDiv);
+                listItem.appendChild(contentDiv);
+                
+                itemsList.appendChild(listItem);
+              });
+            } else {
+              const emptyItem = document.createElement('li');
+              emptyItem.className = 'no-items';
+              emptyItem.textContent = 'No items to display';
+              itemsList.appendChild(emptyItem);
+            }
+            
+            panelDiv.appendChild(headerDiv);
+            panelDiv.appendChild(itemsList);
+            
+            infoPanelsContainer.appendChild(panelDiv);
+          });
+        }
+
+        // Add event listeners
+        function addEventListeners() {
+          const menuBtn = document.querySelector('.menu-btn');
+          menuBtn.addEventListener('click', function() {
+            alert('Menu clicked!');
+          });
+
+          const moduleCards = document.querySelectorAll('.module-card');
+          moduleCards.forEach(card => {
+            card.addEventListener('click', function() {
+              const moduleName = this.querySelector('.module-name').textContent;
+              alert(`${moduleName} module clicked!`);
+            });
+          });
+
+          const searchInput = document.querySelector('.search-input');
+          searchInput.addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            const moduleCards = document.querySelectorAll('.module-card');
+            
+            moduleCards.forEach(card => {
+              const moduleName = card.querySelector('.module-name').textContent.toLowerCase();
+              if (moduleName.includes(searchTerm)) {
+                card.style.display = 'flex';
+              } else {
+                card.style.display = 'none';
+              }
+            });
+          });
+        }
+
+        // Initialize
+        function init() {
+          renderModules();
+          renderInfoPanels();
+          addEventListeners();
+        }
+
+        init();
+      });
+    </script>
+  </body>
+</html>

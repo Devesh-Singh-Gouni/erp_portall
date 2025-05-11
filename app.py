@@ -1,16 +1,26 @@
-from flask import Flask, render_template, request, redirect, url_for, flash, session
+from flask import Flask, render_template, request, redirect, url_for, flash, session, send_file
 import sqlite3
 import os
+import io
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
 
-app = Flask(__name__)
-app.secret_key = 'your_secret_key'  # Replace with a secure random key
-UPLOAD_FOLDER = 'static/uploads'
+# Initialize Flask app
+app = Flask(__name__, 
+            template_folder=r'D:\visual studio\face_recognition\devesh_gouni_\python',  # Templates in 'templates' folder
+            static_folder=r'D:\visual studio\face_recognition\devesh_gouni_\python')      # Static files in 'static' folder
+app.secret_key = os.urandom(24)          # Secure random key
+UPLOAD_FOLDER = r'D:\visual studio\face_recognition\devesh_gouni_\python'        # User uploads
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 # Ensure upload folder exists
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+
+# Allowed file extensions
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 # Database initialization
 def init_db():
@@ -46,6 +56,11 @@ def signup():
             flash('All fields are required!', 'error')
             return redirect(url_for('signup'))
 
+        # Validate file extension
+        if not allowed_file(photo.filename):
+            flash('Invalid file type! Allowed types: png, jpg, jpeg, gif', 'error')
+            return redirect(url_for('signup'))
+
         # Check if email already exists
         conn = sqlite3.connect('users.db')
         c = conn.cursor()
@@ -63,7 +78,7 @@ def signup():
         # Hash password and store user
         hashed_password = generate_password_hash(password)
         c.execute('INSERT INTO users (name, email, password, photo_path) VALUES (?, ?, ?, ?)',
-                 (name, email, hashed_password, filename))  # Save only filename
+                  (name, email, hashed_password, filename))
         conn.commit()
         conn.close()
 
@@ -84,11 +99,11 @@ def login():
         user = c.fetchone()
         conn.close()
 
-        if user and check_password_hash(user[3], password):  # user[3] is password
+        if user and check_password_hash(user[3], password):
             session['user_id'] = user[0]
             session['user_name'] = user[1]
             session['user_email'] = user[2]
-            session['photo_path'] = os.path.join('uploads', user[4])  # Relative path
+            session['photo_path'] = os.path.join('uploads', user[4])
             flash('Login successful!', 'success')
             return redirect(url_for('dashboard'))
         else:
@@ -103,7 +118,6 @@ def dashboard():
         flash('Please log in to access the dashboard.', 'error')
         return redirect(url_for('login'))
 
-    # Fetch user data
     conn = sqlite3.connect('users.db')
     c = conn.cursor()
     c.execute('SELECT name, email, photo_path FROM users WHERE id = ?', (session['user_id'],))
@@ -111,10 +125,11 @@ def dashboard():
     conn.close()
 
     if user:
+        photo_path = os.path.join('uploads', user[2])
         return render_template('dashboard.html',
                                name=user[0],
                                email=user[1],
-                               photo_path=url_for('static', filename=user[2]))
+                               photo_path=photo_path)
     else:
         flash('User not found!', 'error')
         return redirect(url_for('login'))
